@@ -3,8 +3,8 @@ import seaborn as sns
 import pandas as pd
 import numpy as np
 
-def make_top_10(model, X_test_sets, y_test_sets, regression=False):
-    top10_list = []
+def make_top_3(model, X_test_sets, y_test_sets, regression=False):
+    top3_list = []
 
     for i, X_test in enumerate(X_test_sets):
         if regression:
@@ -14,26 +14,26 @@ def make_top_10(model, X_test_sets, y_test_sets, regression=False):
             preds = model.predict_proba(X_test)[:, 1]
 
         true_vals = y_test_sets[i]
-        order = np.argsort(preds)[::-1][:10]
+        order = np.argsort(preds)[::-1][:3]
 
-        top10_df = pd.DataFrame({
+        top3_df = pd.DataFrame({
             "true_label": true_vals.iloc[order].values,
             "score": preds[order]
         })
-        top10_list.append(top10_df)
+        top3_list.append(top3_df)
 
-    return top10_list
+    return top3_list
 
 
-def print_top_predictions(top10_list, X_test_sets, y_test_sets, y_raw_test_sets):
-    for i, (top10_df, _, _, _) in enumerate(
-        zip(top10_list, X_test_sets, y_test_sets, y_raw_test_sets), 1
+def fetch_top_predictions(top3_list, X_test_sets, y_test_sets, y_raw_test_sets):
+    hit_list = []
+    for i, (top3_df, _, _, _) in enumerate(
+        zip(top3_list, X_test_sets, y_test_sets, y_raw_test_sets), 1
     ):
-        print(f"\n=== TOP 10 (Test Set {i}) ===")
-        print(top10_df)
+        hits = top3_df["true_label"].sum()
+        hit_list.append(hits)
 
-        hits = top10_df["true_label"].sum()
-        print("Hits @10:", hits)
+    return hit_list
 
 
 def visualise_gridsearch(cv_results_df, param_x, param_y, param_split):
