@@ -47,7 +47,7 @@ def visualise_gridsearch(cv_results_df, param_x, param_y, param_split):
         )
 
         plt.figure(figsize=(6,4))
-        sns.heatmap(pivot_table, annot=True, fmt=".3f", cmap="YlGnBu")
+        sns.heatmap(pivot_table, annot=True, fmt=".3f", cmap="vlag")
         plt.title(f"Mean CV Score ({param_split}={val})")
         plt.ylabel(param_x)
         plt.xlabel(param_y)
